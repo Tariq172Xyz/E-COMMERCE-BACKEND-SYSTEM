@@ -123,6 +123,27 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(ProductImageNotFoundException.class)
+    public ResponseEntity<ErrorResponse>handleProductImageNotFoundException(Exception ex,HttpServletRequest req){
+        ErrorResponse error=new ErrorResponse(ex.getMessage(),HttpStatus.NOT_FOUND.value(),
+                LocalDateTime.now(),req.getRequestURI());
+        return new ResponseEntity<>(error,HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(FileStorageException.class)
+    public ResponseEntity<ErrorResponse>handleFileStorageException(Exception ex,HttpServletRequest req){
+        ErrorResponse error=new ErrorResponse(ex.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                LocalDateTime.now(),req.getRequestURI());
+        return new ResponseEntity<>(error,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(FileInvalidException.class)
+    public ResponseEntity<ErrorResponse>handleFileInvalidException(Exception ex,HttpServletRequest req) {
+        ErrorResponse error = new ErrorResponse(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                LocalDateTime.now(), req.getRequestURI());
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+
+    }
 
 
 

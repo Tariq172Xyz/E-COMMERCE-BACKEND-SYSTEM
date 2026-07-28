@@ -1,7 +1,6 @@
 package com.ProductSystem.Entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,6 +34,6 @@ public class Product {
     private List<OrderItem> orderItems;
 
     @OneToMany(mappedBy = "product")
-    ProductImage productImage;
+    private List<ProductImage> productImages;
 
 }
