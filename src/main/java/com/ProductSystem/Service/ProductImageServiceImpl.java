@@ -15,6 +15,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -61,10 +62,11 @@ public class ProductImageServiceImpl implements productImageService {
         if (lastDotIndex!=-1){
             extension=originalFileName.substring(lastDotIndex);
         }
+
         String storedFileName= UUID.randomUUID().toString()+extension;
         Path uploadPath = Paths.get(fileStorageProperties.getUploadDirectory());
+        Path targetPath=uploadPath.resolve(storedFileName);
 
-        Path targetPath=uploadPath.resolve(storedFileName);;
         try{
             if (!Files.exists(uploadPath)){
                 Files.createDirectories(uploadPath);
@@ -72,11 +74,9 @@ public class ProductImageServiceImpl implements productImageService {
         Files.copy(file.getInputStream(),targetPath, StandardCopyOption.REPLACE_EXISTING);
         }catch (IOException ex){
             throw new FileStorageException("Failed to store image",ex);
-
         }
 
         ProductImage productImage=new ProductImage();
-        //assuming it won't be null (will be implementing later)
         productImage.setContentType(file.getContentType());
         productImage.setSize(file.getSize());
         productImage.setOriginalFileName(originalFileName);
@@ -90,12 +90,9 @@ public class ProductImageServiceImpl implements productImageService {
             try{
                 Files.delete(targetPath);
             }catch (IOException e){
-           
             }
             throw ex;
         }
-
-
     }
 
     @Override
