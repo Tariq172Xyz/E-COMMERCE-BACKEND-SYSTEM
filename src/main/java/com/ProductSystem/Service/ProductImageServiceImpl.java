@@ -6,6 +6,7 @@ import com.ProductSystem.Entity.Product;
 import com.ProductSystem.Entity.ProductImage;
 import com.ProductSystem.Exceptions.FileInvalidException;
 import com.ProductSystem.Exceptions.FileStorageException;
+import com.ProductSystem.Exceptions.ProductImageNotFoundException;
 import com.ProductSystem.Exceptions.ProductNotFoundException;
 import com.ProductSystem.Repository.ProductImageRepository;
 import com.ProductSystem.Repository.ProductRepository;
@@ -39,6 +40,7 @@ public class ProductImageServiceImpl implements productImageService {
 
 
     @Override
+    @Transactional
     public ProductImageResp uploadImage(Long productId, MultipartFile file){
 
         Product product=productRepository.findById(productId).
@@ -101,8 +103,22 @@ public class ProductImageServiceImpl implements productImageService {
     }
 
     @Override
+    @Transactional
     public void deleteImage(Long imageId) {
+        ProductImage productImage=productImageRepository.findById(imageId).
+                orElseThrow(()-> new ProductImageNotFoundException("Image with this ID not found"));
 
+        String storedFileName= productImage.getStoredFileName();
+        Path path=Paths.get(fileStorageProperties.getUploadDirectory());
+        Path finalPath=path.resolve(storedFileName);
+
+        productImageRepository.delete(productImage);
+
+        try{
+            Files.deleteIfExists(finalPath);
+        }catch (IOException e){
+            throw new FileStorageException("Failed to delete file",e);
+        }
     }
 
     @Override
