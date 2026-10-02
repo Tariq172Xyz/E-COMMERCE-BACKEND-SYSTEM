@@ -24,5 +24,6 @@ public class UserReq {
     @Email(message = "Invalid email input")
     private String email;
 
+
 }
 

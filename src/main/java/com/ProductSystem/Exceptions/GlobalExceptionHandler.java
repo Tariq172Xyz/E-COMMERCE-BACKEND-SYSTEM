@@ -3,10 +3,12 @@ package com.ProductSystem.Exceptions;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -145,6 +147,12 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentials(InvalidCredentialsException ex,HttpServletRequest req) {
+        ErrorResponse error=new ErrorResponse(ex.getMessage(),
+              401,LocalDateTime.now(),req.getRequestURI());
+        return new ResponseEntity<>(error,HttpStatus.UNAUTHORIZED);
+    }
 
 
 }

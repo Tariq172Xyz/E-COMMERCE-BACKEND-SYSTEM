@@ -142,7 +142,7 @@ public class OrderServiceImpl implements OrderService {
 
         // nested — get from user object
         resp.setUserId(order.getUser().getUserId());
-        resp.setUserName(order.getUser().getUserName());
+        resp.setUserName(order.getUser().getUsername());
 
         // nested — convert address to AddressResp
         resp.setDeliveryAddress(
