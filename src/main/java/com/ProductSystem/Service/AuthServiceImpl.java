@@ -3,7 +3,6 @@ package com.ProductSystem.Service;
 import com.ProductSystem.DTO.*;
 import com.ProductSystem.Entity.User;
 import com.ProductSystem.Exceptions.InvalidCredentialsException;
-import com.ProductSystem.Exceptions.InvalidInputException;
 import com.ProductSystem.Exceptions.UserAlreadyExistsException;
 import com.ProductSystem.Repository.UserRepository;
 import com.ProductSystem.Security.JwtUtil;

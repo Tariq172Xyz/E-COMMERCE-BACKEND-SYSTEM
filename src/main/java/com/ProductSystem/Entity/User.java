@@ -42,8 +42,15 @@ public class User implements UserDetails {
         return List.of();
     }
 
+
+    //used int jwtUtil to extract ,email
     @Override
     public String getUsername() {
+        return email;
+    }
+
+    //used in orderservice to display the actual username
+    public String getDisplayname() {
         return userName;
     }
 
