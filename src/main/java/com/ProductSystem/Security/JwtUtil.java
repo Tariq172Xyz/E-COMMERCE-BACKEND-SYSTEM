@@ -3,6 +3,9 @@ package com.ProductSystem.Security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -17,7 +20,8 @@ public class JwtUtil {
 
     @Value("${jwt.secret}")
     private String secretKey;
-
+    @Value("${jwt.expiration}")
+    private Long expiration;
 
 
     //generating a secret key ,which will be used to generate/verify token
@@ -26,8 +30,9 @@ public class JwtUtil {
     }
 
     public String generateToken(UserDetails userDetails){
+        Date now =new Date();
        return Jwts.builder().subject(userDetails.getUsername()).
-               issuedAt(new Date()).expiration(new Date()).
+               issuedAt(new Date()).expiration(new Date(now.getTime()+expiration)).
                signWith(getSigningKey()).
                compact();
     }
@@ -41,7 +46,7 @@ public class JwtUtil {
                 .getPayload();
     }
 
-    //get name from token. why: sometimes we only need to check name instead of all claims
+    //get name/email from token. why: sometimes we only need to check name instead of all claims
     public String extractUsername(String token){
         return extractAllClaims(token).getSubject();
     }
@@ -55,7 +60,7 @@ public class JwtUtil {
     //why -> whether the token is forged by
     // someone or not such as changed name or something which changes base64
     public boolean isTokenValid(String token,UserDetails userDetails){
-        String username=extractUsername(userDetails.getUsername());
+        String username=extractUsername(token);
         return username.equals(userDetails.getUsername())&& !isTokenExpired(token);
     }
 
